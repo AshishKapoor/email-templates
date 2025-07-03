@@ -393,10 +393,22 @@ export default function EmailTemplatesApp() {
                             {template.icon}
                           </div>
                           <div>
-                            <CardTitle className="text-lg text-white group-hover:text-blue-300 transition-colors">
+                            <CardTitle
+                              className={`text-lg transition-colors ${
+                                selectedTemplate?.id === template.id
+                                  ? "text-slate-900 font-semibold"
+                                  : "text-white group-hover:text-blue-300"
+                              }`}
+                            >
                               {template.title}
                             </CardTitle>
-                            <CardDescription className="mt-1 text-slate-300">{template.description}</CardDescription>
+                            <CardDescription
+                              className={`mt-1 transition-colors ${
+                                selectedTemplate?.id === template.id ? "text-slate-700" : "text-slate-300"
+                              }`}
+                            >
+                              {template.description}
+                            </CardDescription>
                           </div>
                         </div>
                         <Badge
