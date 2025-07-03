@@ -13,7 +13,7 @@ Any changes you make to your deployed app will be automatically pushed to this r
 
 Your project is live at:
 
-**(https://vercel.com/ashish-kapoors-projects/email-template)[https://vercel.com/ashish-kapoors-projects/email-template]**
+**[https://vercel.com/ashish-kapoors-projects/email-template](https://vercel.com/ashish-kapoors-projects/email-template)**
 
 ## Build your app
 
