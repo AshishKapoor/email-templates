@@ -1,28 +1,44 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Copy, Check, Mail, Search, Sparkles, Zap, Star, ArrowRight } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import { Toaster } from "@/components/ui/toaster"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  Copy,
+  Check,
+  Mail,
+  Search,
+  Sparkles,
+  Zap,
+  Star,
+  ArrowRight,
+  Github,
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 interface EmailTemplate {
-  id: string
-  title: string
-  description: string
-  category: string
-  template: string
-  placeholders: string[]
-  icon: React.ReactNode
-  color: string
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  template: string;
+  placeholders: string[];
+  icon: React.ReactNode;
+  color: string;
 }
 
 const emailTemplates: EmailTemplate[] = [
@@ -46,7 +62,13 @@ However, I suggest the following alternatives:
 [Alternative 2]
 
 Please let me know if either of these works for you.`,
-    placeholders: ["Name", "request", "priority", "Alternative 1", "Alternative 2"],
+    placeholders: [
+      "Name",
+      "request",
+      "priority",
+      "Alternative 1",
+      "Alternative 2",
+    ],
   },
   {
     id: "addressing-mistake",
@@ -66,12 +88,20 @@ I have already taken the following steps to resolve it:
 [Action 2]
 
 The corrected version will be available by [time], and I will ensure that this issue is prevented in the future.`,
-    placeholders: ["Name", "specific error", "work/report/task", "Action 1", "Action 2", "time"],
+    placeholders: [
+      "Name",
+      "specific error",
+      "work/report/task",
+      "Action 1",
+      "Action 2",
+      "time",
+    ],
   },
   {
     id: "giving-feedback",
     title: "Giving A Feedback",
-    description: "Provide constructive feedback with strengths and improvements",
+    description:
+      "Provide constructive feedback with strengths and improvements",
     category: "Feedback",
     icon: <Sparkles className="h-5 w-5" />,
     color: "from-green-500 to-emerald-500",
@@ -94,7 +124,14 @@ Areas for improvement:
 [Suggestion 2]
 
 If you would like to discuss this further, I'm happy to connect.`,
-    placeholders: ["Name", "project", "Point 1", "Point 2", "Suggestion 1", "Suggestion 2"],
+    placeholders: [
+      "Name",
+      "project",
+      "Point 1",
+      "Point 2",
+      "Suggestion 1",
+      "Suggestion 2",
+    ],
   },
   {
     id: "weekly-update",
@@ -243,59 +280,74 @@ Here are a few time slots that work for me:
 [Option 2]
 
 Alternatively, if these don't work, please book the first available slot in my calendar.`,
-    placeholders: ["Name", "specific topic", "duration", "Option 1", "Option 2"],
+    placeholders: [
+      "Name",
+      "specific topic",
+      "duration",
+      "Option 1",
+      "Option 2",
+    ],
   },
-]
+];
 
 export default function EmailTemplatesApp() {
-  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null)
-  const [placeholderValues, setPlaceholderValues] = useState<Record<string, string>>({})
-  const [searchTerm, setSearchTerm] = useState("")
-  const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({})
-  const { toast } = useToast()
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<EmailTemplate | null>(null);
+  const [placeholderValues, setPlaceholderValues] = useState<
+    Record<string, string>
+  >({});
+  const [searchTerm, setSearchTerm] = useState("");
+  const [copiedStates, setCopiedStates] = useState<Record<string, boolean>>({});
+  const { toast } = useToast();
 
   const filteredTemplates = emailTemplates.filter(
     (template) =>
       template.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       template.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      template.category.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      template.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const generateEmail = (template: EmailTemplate) => {
-    let email = template.template
+    let email = template.template;
     template.placeholders.forEach((placeholder) => {
-      const value = placeholderValues[placeholder] || `[${placeholder}]`
-      email = email.replace(new RegExp(`\\[${placeholder.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\]`, "g"), value)
-    })
-    return email
-  }
+      const value = placeholderValues[placeholder] || `[${placeholder}]`;
+      email = email.replace(
+        new RegExp(
+          `\\[${placeholder.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\]`,
+          "g"
+        ),
+        value
+      );
+    });
+    return email;
+  };
 
   const copyToClipboard = async (text: string, templateId: string) => {
     try {
-      await navigator.clipboard.writeText(text)
-      setCopiedStates((prev) => ({ ...prev, [templateId]: true }))
+      await navigator.clipboard.writeText(text);
+      setCopiedStates((prev) => ({ ...prev, [templateId]: true }));
       toast({
         title: "✨ Copied to clipboard",
         description: "Email template has been copied successfully.",
-      })
+      });
       setTimeout(() => {
-        setCopiedStates((prev) => ({ ...prev, [templateId]: false }))
-      }, 2000)
+        setCopiedStates((prev) => ({ ...prev, [templateId]: false }));
+      }, 2000);
     } catch (err) {
       toast({
         title: "Failed to copy",
         description: "Please try again or copy manually.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const resetForm = () => {
-    setPlaceholderValues({})
-    setSelectedTemplate(null)
-  }
+    setPlaceholderValues({});
+    setSelectedTemplate(null);
+  };
 
-  const categories = Array.from(new Set(emailTemplates.map((t) => t.category)))
+  const categories = Array.from(new Set(emailTemplates.map((t) => t.category)));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
@@ -320,21 +372,23 @@ export default function EmailTemplatesApp() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-50"></div>
-                <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-3 rounded-full">
-                  <Mail className="h-8 w-8 text-white" />
-                </div>
-              </div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
-                Professional Email Templates
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent">
+                Email Generator Pro
               </h1>
+              <a
+                href="https://github.com/ashishkapoor/email-templates"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110 group"
+                aria-label="View project on GitHub"
+              >
+                <Github className="w-6 h-6 text-white group-hover:text-purple-200 transition-colors" />
+              </a>
             </div>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-              Choose from 9 professionally crafted email templates for common workplace scenarios.
-              <span className="text-blue-400 font-medium"> Customize placeholders</span> and
-              <span className="text-purple-400 font-medium"> copy ready-to-send emails</span> with style.
+            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+              Professional email templates for every business situation.
+              Customize, copy, and send with confidence.
             </p>
           </div>
 
@@ -389,7 +443,9 @@ export default function EmailTemplatesApp() {
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-3">
-                          <div className={`p-2 rounded-lg bg-gradient-to-r ${template.color} shadow-lg`}>
+                          <div
+                            className={`p-2 rounded-lg bg-gradient-to-r ${template.color} shadow-lg`}
+                          >
                             {template.icon}
                           </div>
                           <div>
@@ -404,7 +460,9 @@ export default function EmailTemplatesApp() {
                             </CardTitle>
                             <CardDescription
                               className={`mt-1 transition-colors ${
-                                selectedTemplate?.id === template.id ? "text-slate-700" : "text-slate-300"
+                                selectedTemplate?.id === template.id
+                                  ? "text-slate-700"
+                                  : "text-slate-300"
                               }`}
                             >
                               {template.description}
@@ -431,7 +489,9 @@ export default function EmailTemplatesApp() {
                   <CardHeader className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-white/10">
                     <CardTitle className="flex items-center justify-between text-white">
                       <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg bg-gradient-to-r ${selectedTemplate.color}`}>
+                        <div
+                          className={`p-2 rounded-lg bg-gradient-to-r ${selectedTemplate.color}`}
+                        >
                           {selectedTemplate.icon}
                         </div>
                         {selectedTemplate.title}
@@ -439,7 +499,12 @@ export default function EmailTemplatesApp() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => copyToClipboard(generateEmail(selectedTemplate), selectedTemplate.id)}
+                        onClick={() =>
+                          copyToClipboard(
+                            generateEmail(selectedTemplate),
+                            selectedTemplate.id
+                          )
+                        }
                         className="bg-gradient-to-r from-green-500 to-emerald-500 border-0 text-white hover:from-green-600 hover:to-emerald-600 transition-all duration-300"
                       >
                         {copiedStates[selectedTemplate.id] ? (
@@ -455,7 +520,9 @@ export default function EmailTemplatesApp() {
                         )}
                       </Button>
                     </CardTitle>
-                    <CardDescription className="text-slate-300">{selectedTemplate.description}</CardDescription>
+                    <CardDescription className="text-slate-300">
+                      {selectedTemplate.description}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6 p-6">
                     <div>
@@ -464,48 +531,53 @@ export default function EmailTemplatesApp() {
                         Customize Placeholders
                       </h3>
                       <div className="grid gap-4">
-                        {selectedTemplate.placeholders.map((placeholder, index) => (
-                          <div key={placeholder} className="space-y-2">
-                            <Label htmlFor={placeholder} className="text-sm font-medium text-slate-300">
-                              {placeholder}
-                            </Label>
-                            {placeholder.includes("Alternative") ||
-                            placeholder.includes("Action") ||
-                            placeholder.includes("Point") ||
-                            placeholder.includes("Suggestion") ||
-                            placeholder.includes("Priority") ||
-                            placeholder.includes("Detail") ||
-                            placeholder.includes("Element") ||
-                            placeholder.includes("Option") ? (
-                              <Textarea
-                                id={placeholder}
-                                placeholder={`Enter ${placeholder.toLowerCase()}...`}
-                                value={placeholderValues[placeholder] || ""}
-                                onChange={(e) =>
-                                  setPlaceholderValues((prev) => ({
-                                    ...prev,
-                                    [placeholder]: e.target.value,
-                                  }))
-                                }
-                                className="bg-white/5 border-white/20 text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:ring-blue-500/50 backdrop-blur-sm"
-                                rows={2}
-                              />
-                            ) : (
-                              <Input
-                                id={placeholder}
-                                placeholder={`Enter ${placeholder.toLowerCase()}...`}
-                                value={placeholderValues[placeholder] || ""}
-                                onChange={(e) =>
-                                  setPlaceholderValues((prev) => ({
-                                    ...prev,
-                                    [placeholder]: e.target.value,
-                                  }))
-                                }
-                                className="bg-white/5 border-white/20 text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:ring-blue-500/50 backdrop-blur-sm"
-                              />
-                            )}
-                          </div>
-                        ))}
+                        {selectedTemplate.placeholders.map(
+                          (placeholder, index) => (
+                            <div key={placeholder} className="space-y-2">
+                              <Label
+                                htmlFor={placeholder}
+                                className="text-sm font-medium text-slate-300"
+                              >
+                                {placeholder}
+                              </Label>
+                              {placeholder.includes("Alternative") ||
+                              placeholder.includes("Action") ||
+                              placeholder.includes("Point") ||
+                              placeholder.includes("Suggestion") ||
+                              placeholder.includes("Priority") ||
+                              placeholder.includes("Detail") ||
+                              placeholder.includes("Element") ||
+                              placeholder.includes("Option") ? (
+                                <Textarea
+                                  id={placeholder}
+                                  placeholder={`Enter ${placeholder.toLowerCase()}...`}
+                                  value={placeholderValues[placeholder] || ""}
+                                  onChange={(e) =>
+                                    setPlaceholderValues((prev) => ({
+                                      ...prev,
+                                      [placeholder]: e.target.value,
+                                    }))
+                                  }
+                                  className="bg-white/5 border-white/20 text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:ring-blue-500/50 backdrop-blur-sm"
+                                  rows={2}
+                                />
+                              ) : (
+                                <Input
+                                  id={placeholder}
+                                  placeholder={`Enter ${placeholder.toLowerCase()}...`}
+                                  value={placeholderValues[placeholder] || ""}
+                                  onChange={(e) =>
+                                    setPlaceholderValues((prev) => ({
+                                      ...prev,
+                                      [placeholder]: e.target.value,
+                                    }))
+                                  }
+                                  className="bg-white/5 border-white/20 text-white placeholder:text-slate-400 focus:border-blue-500/50 focus:ring-blue-500/50 backdrop-blur-sm"
+                                />
+                              )}
+                            </div>
+                          )
+                        )}
                       </div>
                     </div>
 
@@ -543,9 +615,12 @@ export default function EmailTemplatesApp() {
                         <Mail className="h-12 w-12 text-white" />
                       </div>
                     </div>
-                    <h3 className="text-xl font-semibold text-white mb-3">Select a Template</h3>
+                    <h3 className="text-xl font-semibold text-white mb-3">
+                      Select a Template
+                    </h3>
                     <p className="text-slate-300 max-w-sm">
-                      Choose an email template from the list to customize and preview it with our fancy editor.
+                      Choose an email template from the list to customize and
+                      preview it with our fancy editor.
                     </p>
                   </CardContent>
                 </Card>
@@ -556,5 +631,5 @@ export default function EmailTemplatesApp() {
       </div>
       <Toaster />
     </div>
-  )
+  );
 }
